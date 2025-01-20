@@ -1,22 +1,20 @@
-import { tokenize } from "./functions/tokenize.js";
-import { evaluatePostfix } from "./functions/evaluate-postfix.js";
-import { toPostfix } from "./functions/toPostfix.js";
-
+import { Calculator } from "./functions/calculator.js";
+import { addEventListeners } from "./functions/add-event-listeners.js";
 // main script
 
-const input = document.querySelector(".calculator-input");
-const output = document.querySelector(".output");
-const button = document.querySelector(".evalute");
+// Set Constants
+
+// PI
+const pi = document.querySelector(".pi");
+pi.dataset.value = Math.PI;
+
+// e
+const e = document.querySelector(".e");
+e.dataset.value = Math.E;
+
+addEventListeners();
 const safeToStart = false;
+let calculatorInput;
+const calculator = new Calculator("");
 
-button.addEventListener("click", (event) => {
-  try {
-    const tokenArray = tokenize(String(input.value));
-    const postfixArray = toPostfix(tokenArray);
-    const outputValue = evaluatePostfix(postfixArray);
-
-    output.textContent = outputValue;
-  } catch (err) {
-    console.log(err.message);
-  }
-});
+export { calculator };
