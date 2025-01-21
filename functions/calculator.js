@@ -1,6 +1,7 @@
 import { degToRad } from "./degree-to-radians.js";
 class Calculator {
   #infixInput;
+  static #angleInput = "deg";
 
   constructor() {
     this.#infixInput = "";
@@ -28,6 +29,14 @@ class Calculator {
     this.#infixInput = "";
   }
 
+  toggleAngleInput() {
+    Calculator.#angleInput = Calculator.#angleInput == "deg" ? "rad" : "deg";
+  }
+
+  currAngleInput() {
+    return Calculator.#angleInput;
+  }
+
   // basic operations
   static add(a, b) {
     return a + b;
@@ -42,6 +51,9 @@ class Calculator {
   }
 
   static divide(a, b) {
+    if (b == 0) {
+      throw new Error("Can't divide by 0");
+    }
     return a / b;
   }
 
@@ -58,18 +70,36 @@ class Calculator {
   }
 
   static sin(a) {
-    a = degToRad(a);
+    if (this.#angleInput == "deg") {
+      a = degToRad(a);
+    }
     return Math.round(Math.sin(a) * 10) / 10;
   }
 
   static cos(a) {
-    a = degToRad(a);
+    if (this.#angleInput == "deg") {
+      a = degToRad(a);
+    }
     return Math.round(Math.cos(a) * 10) / 10;
   }
 
   static tan(a) {
-    a = degToRad(a);
+    if (this.#angleInput == "deg") {
+      a = degToRad(a);
+    }
     return Math.round(Math.tan(a) * 10) / 10;
+  }
+
+  static sini(a) {
+    return Math.round(Math.asin(a) * 10) / 10;
+  }
+
+  static cosi(a) {
+    return Math.round(Math.acos(a) * 10) / 10;
+  }
+
+  static tani(a) {
+    return Math.round(Math.atan(a) * 10) / 10;
   }
 
   static percentage(a) {
@@ -114,6 +144,9 @@ class Calculator {
     sin: 10,
     cos: 10,
     tan: 10,
+    sini: 10,
+    cosi: 10,
+    tani: 10,
     log: 10,
     sqrt: 10,
     ln: 10,
@@ -124,6 +157,9 @@ class Calculator {
     "sin",
     "cos",
     "tan",
+    "sini",
+    "cosi",
+    "tani",
     "log",
     "sqrt",
     "%",
@@ -153,6 +189,12 @@ class Calculator {
         return Calculator.cos(operands[0]);
       case "tan":
         return Calculator.tan(operands[0]);
+      case "sini":
+        return Calculator.sini(operands[0]);
+      case "cosi":
+        return Calculator.cosi(operands[0]);
+      case "tani":
+        return Calculator.tani(operands[0]);
       case "log":
         return Calculator.log(operands[0]);
       case "ln":

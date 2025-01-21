@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script type="module" src="index.js" defer></script>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="light.css" id="theme" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -14,6 +14,7 @@
     />
   </head>
   <body>
+    <button class="toggle-dark-mode">Dark Mode</button>
     <div class="calculator-container">
       <div class="calculator-display-container">
         <div class="calculator-display"></div>
@@ -23,9 +24,30 @@
       <div class="calculator-buttons">
         <div class="second-row">2<sup>nd</sup></div>
         <div class="mod" data-value="|">mod</div>
-        <div class="sin trignometric function" data-value="sin">sin</div>
-        <div class="cos trignometric function" data-value="cos">cos</div>
-        <div class="tan trignometric function" data-value="tan">tan</div>
+        <div
+          class="sin trignometric function"
+          data-value="sin"
+          data-inverse-value="sini"
+          data-inverse-display-value="sin-1"
+        >
+          sin
+        </div>
+        <div
+          class="cos trignometric function"
+          data-value="cos"
+          data-inverse-value="cosi"
+          data-inverse-display-value="cos-1"
+        >
+          cos
+        </div>
+        <div
+          class="tan trignometric function"
+          data-value="tan"
+          data-inverse-value="tani"
+          data-inverse-display-value="tan-1"
+        >
+          tan
+        </div>
 
         <div class="x-power-y operator" data-value="^">x<sup>y</sup></div>
         <div class="log function" data-value="log">log</div>
@@ -53,7 +75,7 @@
           <i class="fa-solid fa-xmark" style="color: #f97316"></i>
         </div>
 
-        <div class="inverse-number" data-value="^-1">1/x</div>
+        <div class="inverse-number operator" data-value="^-1">1/x</div>
         <div class="numpad-number" data-value="4">4</div>
         <div class="numpad-number" data-value="5">5</div>
         <div class="numpad-number" data-value="6">6</div>
@@ -69,7 +91,7 @@
           <i class="fa-solid fa-plus" style="color: #f97316"></i>
         </div>
 
-        <div class="deg deg-rad-toggle">deg</div>
+        <div class="deg angle-toggle">deg</div>
         <div class="e" data-value="e">e</div>
         <div class="numpad-number" data-value="0">0</div>
         <div class="decimal" data-value=".">.</div>
