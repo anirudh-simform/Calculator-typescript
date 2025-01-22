@@ -1,5 +1,8 @@
 import { calculator } from "../index.js";
+import { getCalculationObject } from "./get-calculation-object.js";
+import { getHistoryArray } from "../data-objects/local-history-array.js";
 function addEventListeners() {
+  // Fetch required DOM nodes
   const calculatorDisplayContainer = document.querySelector(
     ".calculator-display-container"
   );
@@ -8,27 +11,50 @@ function addEventListeners() {
   const trignometricFunctions = document.querySelectorAll(".trignometric");
   const secondButton = document.querySelector(".second-row");
   const angleToggle = document.querySelector(".angle-toggle");
-  const theme = document.querySelector("#theme");
 
-  // Dark mode button
-  const toggleDarkModeButton = document.querySelector(".toggle-dark-mode");
-  toggleDarkModeButton.addEventListener("click", () => {
-    if (theme.getAttribute("href") == "light.css") {
-      toggleDarkModeButton.textContent = "Light Mode";
-      theme.href = "dark.css";
-    } else {
-      toggleDarkModeButton.textContent = "Dark Mode";
-      theme.href = "light.css";
-    }
-  });
+  let newDisplay;
+  let newAnswerDisplay;
+
+  // Pins scrollbar of the calculatorDisplayContainer to the bottom
+  function pinDisplayToBottom() {
+    // Pin scrollbar in the display to the bottom
+    calculatorDisplayContainer.scrollTop =
+      calculatorDisplayContainer.scrollHeight -
+      calculatorDisplayContainer.clientHeight;
+  }
+
+  // Sets up new Display and answerDisplay nodes and updates the previous variables
+  // to refer to the new nodes
+  function setupNewNodes(newDisplayValue, newAnswerDisplayValue) {
+    newDisplay = display.cloneNode();
+    newAnswerDisplay = answerDisplay.cloneNode();
+    newDisplay.textContent = newDisplayValue;
+    newAnswerDisplay.textContent = newAnswerDisplayValue;
+
+    // Update display and answerDisplay to refer to the latest two nodes
+    display = newDisplay;
+    answerDisplay = newAnswerDisplay;
+
+    // Append the newly created nodes to the calculator display container
+    calculatorDisplayContainer.append(newDisplay, newAnswerDisplay);
+
+    pinDisplayToBottom();
+  }
 
   // To check if the equals button has been pressed once
   let oneEvaluationDone = false;
+  // To check if the display has been cleared once
   let oneClearDone = false;
+  // To check if an error occured in the previous calculation
   let errorOccured = false;
-  let numberAfterError = false;
+  // To check if an operator is already present in the current expression
+  let operatorAlreadyPresent = false;
+  // To check if a new node to render the number has already been appended
+  let newDisplayNodeAlreadyPresent = false;
+  // Tracks the type of latest character added to display
+  let latestChar;
 
-  // 2nd button lets use access the inverse trignometric functions
+  // 2nd button lets us access the inverse trignometric functions
   secondButton.addEventListener("click", () => {
     trignometricFunctions.forEach((trig) => {
       if (trig.classList.contains("inverse")) {
@@ -46,9 +72,6 @@ function addEventListeners() {
   const allClear = document.querySelector(".all-clear");
   allClear.addEventListener("click", () => {
     calculator.clearInput();
-    // Clone the display and answer display nodes
-    const newDisplay = display.cloneNode();
-    const newAnswerDisplay = answerDisplay.cloneNode();
     if (oneClearDone) {
       while (calculatorDisplayContainer.firstChild) {
         calculatorDisplayContainer.removeChild(
@@ -56,40 +79,16 @@ function addEventListeners() {
         );
       }
 
-      newDisplay.textContent = "";
-      newAnswerDisplay.textContent = "";
-
-      // Update display and answerDisplay to refer to the latest two nodes
-      display = newDisplay;
-      answerDisplay = newAnswerDisplay;
-
-      // Append the newly created nodes to the calculator display container
-      calculatorDisplayContainer.append(newDisplay, newAnswerDisplay);
+      setupNewNodes("", "");
 
       // Reset oneEvaluationDone and oneClearDone
       oneEvaluationDone = false;
       oneClearDone = false;
       errorOccured = false;
-      numberAfterError = false;
     } else {
-      // Initialize the text content of both cloned nodes to empty string
-      newDisplay.textContent = "0";
-      newAnswerDisplay.textContent = "";
-
       // Reset Calculator
       calculator.setInfix("0");
-
-      // Update display and answerDisplay to refer to the latest two nodes
-      display = newDisplay;
-      answerDisplay = newAnswerDisplay;
-
-      // Append the newly created nodes to the calculator display container
-      calculatorDisplayContainer.append(newDisplay, newAnswerDisplay);
-
-      // Pin scrollbar in the display to the bottom
-      calculatorDisplayContainer.scrollTop =
-        calculatorDisplayContainer.scrollHeight -
-        calculatorDisplayContainer.clientHeight;
+      setupNewNodes("0", "");
     }
     oneClearDone = true;
 
@@ -109,7 +108,9 @@ function addEventListeners() {
   const equals = document.querySelector(".equals");
   equals.addEventListener("click", () => {
     let outputValue;
+    let expression;
     try {
+      expression = calculator.getInfix();
       outputValue = calculator.evaluteInfix();
       if (!outputValue) {
         throw new Error("The entered expression is incorrect");
@@ -122,17 +123,19 @@ function addEventListeners() {
     }
 
     answerDisplay.textContent = outputValue;
-
-    // Pin scrollbar in the display to the bottom
-    calculatorDisplayContainer.scrollTop =
-      calculatorDisplayContainer.scrollHeight -
-      calculatorDisplayContainer.clientHeight;
+    pinDisplayToBottom();
 
     if (!oneEvaluationDone) {
       oneEvaluationDone = true;
     }
 
     allClear.textContent = "C";
+    operatorAlreadyPresent = false;
+    newDisplayNodeAlreadyPresent = false;
+
+    const history = getHistoryArray();
+    history.push(getCalculationObject(expression, outputValue));
+    localStorage.setItem("history", JSON.stringify(history));
   });
 
   // Number buttons
@@ -141,35 +144,54 @@ function addEventListeners() {
     numberNode.addEventListener("click", () => {
       const value = String(numberNode.dataset.value);
 
-      // Checking if C has been pressed once to clear the previously present placeholder and not append the current number to the display
+      /* 
+      If the display is in cleared state replace the already present zero with the clicked number
+      Display
+      =====================================
+      0 --> value
+      */
       if (oneClearDone) {
         calculator.setInfix(value);
         display.textContent = value;
-      } else if (errorOccured) {
+      } else if (
+        /*
+      if the display is in error state 
+      or 
+      if one evaluation has been done and currently the display does not have any operators
+      then
+      make new nodes that contains the value of the clicked number with a blank answer node
+      Display
+      =========================================================================================================
+      Error State                                       |        (oneEvaluationDone && !operatorAlreadyPresent)      
+      --------------------------------                  |        ---------------------------------------
+      Can't divide by zero --> Can't divide by zero     |        number --> number
+                               value (in new node)                          value (in new node)
+      */
+
+        errorOccured ||
+        (oneEvaluationDone && !operatorAlreadyPresent)
+      ) {
         calculator.setInfix(value);
-        const newDisplay = display.cloneNode();
-        const newAnswerDisplay = answerDisplay.cloneNode();
-        newDisplay.textContent = value;
-        newAnswerDisplay.textContent = "";
+        setupNewNodes(value, "");
 
-        // Update display and answerDisplay to refer to the latest two nodes
-        display = newDisplay;
-        answerDisplay = newAnswerDisplay;
+        if (errorOccured) {
+          errorOccured = false;
+        }
 
-        // Append the newly created nodes to the calculator display container
-        calculatorDisplayContainer.append(newDisplay, newAnswerDisplay);
+        if (oneEvaluationDone && !operatorAlreadyPresent) {
+          operatorAlreadyPresent = false;
+        }
 
-        // Pin scrollbar in the display to the bottom
-        calculatorDisplayContainer.scrollTop =
-          calculatorDisplayContainer.scrollHeight -
-          calculatorDisplayContainer.clientHeight;
-
-        numberAfterError = true;
-        errorOccured = false;
-      } else {
+        newDisplayNodeAlreadyPresent = true;
+      }
+      // In all other cases append character to display normally
+      else {
         calculator.appendChar(value);
         display.textContent += value;
+        newDisplayNodeAlreadyPresent = true;
       }
+
+      latestChar = "number";
     });
   });
 
@@ -179,56 +201,62 @@ function addEventListeners() {
     operator.addEventListener("click", () => {
       const value = String(operator.dataset.value);
       calculator.appendChar(value);
-      if (!oneEvaluationDone || oneClearDone || numberAfterError) {
+      /*
+      if 
+      one evalutation has been done
+      or
+      the display has been cleared once
+      or
+      new display node is already present with operands
+      or
+      the latest character is an operator
+      then
+      append operator normally to display
+
+      Display
+      =========================
+      eg. 8 --> 8+
+      */
+      if (
+        !oneEvaluationDone ||
+        oneClearDone ||
+        newDisplayNodeAlreadyPresent ||
+        latestChar == "operator"
+      ) {
         display.textContent += value;
 
-        // Toggling oneClearDone to false so that any numbers entered after this invocation render don't clear the display
+        // Toggling oneClearDone to false so that any numbers entered after this invocation don't clear the display
         if (oneClearDone) {
           oneClearDone = false;
         }
-
-        if (numberAfterError) {
-          numberAfterError = false;
-        }
       } else if (errorOccured) {
+        /*
+      if an error has occured
+      then
+      setup new nodes with value of zero concatenated with the operator
+
+      Display
+      ==========================
+      eg. error --> In new node => 0+
+      */
         calculator.setInfix("0" + value);
-        const newDisplay = display.cloneNode();
-        const newAnswerDisplay = answerDisplay.cloneNode();
-        newDisplay.textContent = "0" + value;
-        newAnswerDisplay.textContent = "";
-
-        // Update display and answerDisplay to refer to the latest two nodes
-        display = newDisplay;
-        answerDisplay = newAnswerDisplay;
-
-        // Append the newly created nodes to the calculator display container
-        calculatorDisplayContainer.append(newDisplay, newAnswerDisplay);
-
-        // Pin scrollbar in the display to the bottom
-        calculatorDisplayContainer.scrollTop =
-          calculatorDisplayContainer.scrollHeight -
-          calculatorDisplayContainer.clientHeight;
+        setupNewNodes("0" + value, "");
+        newDisplayNodeAlreadyPresent = true;
       } else {
-        // Clone the display and answerDisplay node to store the expression and answer for the next calculation
-        const newDisplay = display.cloneNode();
-        const newAnswerDisplay = answerDisplay.cloneNode();
-        newDisplay.textContent = answerDisplay.textContent + value;
-        newAnswerDisplay.textContent = "";
-
-        // Update display and answerDisplay to refer to the latest two nodes
-        display = newDisplay;
-        answerDisplay = newAnswerDisplay;
-
-        // Append the newly created nodes to the calculator display container
-        calculatorDisplayContainer.append(newDisplay, newAnswerDisplay);
-
-        // Pin scrollbar in the display to the bottom
-        calculatorDisplayContainer.scrollTop =
-          calculatorDisplayContainer.scrollHeight -
-          calculatorDisplayContainer.clientHeight;
+        /*
+      For all other cases setup new nodes with values of the previous answer concatenated with the operator
+      Display
+      ================================
+      eg.
+      5+7
+      12 --> 12+
+      */
+        setupNewNodes(answerDisplay.textContent + value, "");
       }
 
       errorOccured = false;
+      operatorAlreadyPresent = true;
+      latestChar = "operator";
     });
   });
 

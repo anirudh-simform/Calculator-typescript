@@ -4,6 +4,8 @@
     --gray: #4b5563;
     --calulator-background: #d4d4d8;
     --body-color: #3f3f46;
+    --dark-mode-expression-color: #fde68a;
+    --dark-mode-history-color: #64748b; 
 }
 
 * {
@@ -20,6 +22,61 @@ body {
     background-color: var(--body-color);
 }
 
+dialog {
+    width: 40%;
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    border: none;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    background-color: var(--gray);
+}
+
+dialog>header {
+    display: flex;
+    justify-content: space-between;
+    color: white;
+}
+
+.history-container {
+    margin-top: 1rem;
+}
+
+.history-container>div {
+    border: solid 2px var(--orange);
+    border-radius: 10px;
+    padding: 1rem;
+    max-height: 20rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: var(--dark-mode-history-color);
+}
+
+.expression {
+    color: var(--dark-mode-expression-color);
+    font-size: 1.5rem;
+}
+
+.result {
+    font-size: 2rem;
+    color: white;
+}
+
+.close {
+    font-size: 1.2rem;
+    background-color: transparent;
+    border: none;
+    color: white;
+}
+
+.close:hover {
+    background-color: white;
+    color: red;
+}
+
 .toggle-dark-mode {
     max-width: max-content;
     align-self: flex-end;
@@ -28,6 +85,17 @@ body {
     border-radius: 5px;
     border: 1px solid white;
 }
+
+.see-full-history {
+    max-width: max-content;
+    margin-bottom: 0.5rem;
+    align-self: flex-end;
+    background-color: #22c55e;
+    color: white;
+    border-radius: 5px;
+    border: 1px solid white;
+}
+
 .calculator-container {
     display: flex;
     flex-direction: column;

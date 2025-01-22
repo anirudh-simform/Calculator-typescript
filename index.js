@@ -1,6 +1,14 @@
 import { Calculator } from "./functions/calculator.js";
 import { addEventListeners } from "./functions/add-event-listeners.js";
+import { setupDarkMode } from "./functions/setup-dark-mode.js";
+import { addModalEventListeners } from "./functions/modal-event-listeners.js";
 // main script
+
+// Dark Mode
+setupDarkMode();
+
+// Setup modal
+addModalEventListeners();
 
 // Set Constants
 

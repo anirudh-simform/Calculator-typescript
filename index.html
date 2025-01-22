@@ -16,6 +16,8 @@
   <body>
     <button class="toggle-dark-mode">Dark Mode</button>
     <div class="calculator-container">
+      <button class="see-full-history">See full history</button>
+
       <div class="calculator-display-container">
         <div class="calculator-display"></div>
         <div class="answer-display"></div>
@@ -98,5 +100,13 @@
         <div class="equals big-orange" data-value="=">=</div>
       </div>
     </div>
+
+    <dialog>
+      <header>
+        <h2>History</h2>
+        <button class="close"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+      <div class="history-container"></div>
+    </dialog>
   </body>
 </html>
