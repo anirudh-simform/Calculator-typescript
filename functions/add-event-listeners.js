@@ -99,9 +99,21 @@ function addEventListeners() {
   // Backspace button (deletes the last character)
   const backspace = document.querySelector(".backspace");
   backspace.addEventListener("click", () => {
-    calculator.removeLastChar();
-    const currDisplay = String(display.textContent);
-    display.textContent = currDisplay.slice(0, currDisplay.length - 1);
+    let currDisplay = String(display.textContent);
+    // if the display contains a function at the end remove all characters
+    // of the function till it encounters a binary operator
+    if (currDisplay.charAt(currDisplay.length - 1) == "(") {
+      while (
+        !("+-*/".indexOf(currDisplay.charAt(currDisplay.length - 1)) > -1)
+      ) {
+        calculator.removeLastChar();
+        display.textContent = currDisplay.slice(0, currDisplay.length - 1);
+        currDisplay = String(display.textContent);
+      }
+    } else {
+      calculator.removeLastChar();
+      display.textContent = currDisplay.slice(0, currDisplay.length - 1);
+    }
   });
 
   // Equals button (evaluates expression)
@@ -132,6 +144,7 @@ function addEventListeners() {
     allClear.textContent = "C";
     operatorAlreadyPresent = false;
     newDisplayNodeAlreadyPresent = false;
+    oneClearDone = false;
 
     const history = getHistoryArray();
     history.push(getCalculationObject(expression, outputValue));
@@ -150,14 +163,18 @@ function addEventListeners() {
       =====================================
       0 --> value
       */
-      if (oneClearDone) {
+      if (oneClearDone && String(display.textContent) == "0") {
         calculator.setInfix(value);
         display.textContent = value;
       } else if (
         /*
       if the display is in error state 
       or 
-      if one evaluation has been done and currently the display does not have any operators
+      if one evaluation has been done 
+      and 
+      currently the display does not have any operators
+      and
+      A new display is not present
       then
       make new nodes that contains the value of the clicked number with a blank answer node
       Display
@@ -169,7 +186,9 @@ function addEventListeners() {
       */
 
         errorOccured ||
-        (oneEvaluationDone && !operatorAlreadyPresent)
+        (oneEvaluationDone &&
+          !operatorAlreadyPresent &&
+          !newDisplayNodeAlreadyPresent)
       ) {
         calculator.setInfix(value);
         setupNewNodes(value, "");
@@ -289,11 +308,60 @@ function addEventListeners() {
         value = String(node.dataset.value) + "(";
         displayValue = value;
       }
-      calculator.appendChar(value);
-      display.textContent += displayValue;
+
+      /* 
+      If the display is in cleared state replace the already present zero with the clicked number
+      Display
+      =====================================
+      0 --> value
+      */
+      if (oneClearDone) {
+        calculator.setInfix(value);
+        display.textContent = displayValue;
+      } else if (
+        /*
+      if the display is in error state 
+      or 
+      if one evaluation has been done and currently the display does not have any operators
+      then
+      make new nodes that contains the value of the clicked number with a blank answer node
+      Display
+      =========================================================================================================
+      Error State                                       |        (oneEvaluationDone && !operatorAlreadyPresent)      
+      --------------------------------                  |        ---------------------------------------
+      Can't divide by zero --> Can't divide by zero     |        number --> number
+                               value (in new node)                          value (in new node)
+      */
+
+        errorOccured ||
+        (oneEvaluationDone && !operatorAlreadyPresent)
+      ) {
+        calculator.setInfix(value);
+        setupNewNodes(displayValue, "");
+
+        if (errorOccured) {
+          errorOccured = false;
+        }
+
+        if (oneEvaluationDone && !operatorAlreadyPresent) {
+          operatorAlreadyPresent = false;
+        }
+
+        newDisplayNodeAlreadyPresent = true;
+      }
+      // In all other cases append character to display normally
+      else {
+        calculator.appendChar(value);
+        display.textContent += displayValue;
+        newDisplayNodeAlreadyPresent = true;
+      }
+
+      latestChar = "function";
+      operatorAlreadyPresent = true;
     });
   });
 
+  // Square root button
   const squareRoot = document.querySelector(".square-root");
   squareRoot.addEventListener("click", () => {
     const value = String(squareRoot.dataset.value) + "(";
@@ -318,13 +386,6 @@ function addEventListeners() {
   });
 
   // miscellaneous
-  // const inverse = document.querySelector(".inverse-number");
-  // inverse.addEventListener("click", () => {
-  //   const value = String(inverse.dataset.value);
-  //   calculator.appendChar(value);
-  //   display.textContent += value;
-  // });
-
   const decimal = document.querySelector(".decimal");
   decimal.addEventListener("click", () => {
     const value = String(decimal.dataset.value);
@@ -342,14 +403,17 @@ function addEventListeners() {
     display.textContent += mod.textContent;
   });
 
+  // Toggle angle between degree and radian
   angleToggle.addEventListener("click", () => {
     if (angleToggle.classList.contains("deg")) {
       angleToggle.textContent = "rad";
       angleToggle.classList.remove("deg");
+      // Disable 2nd row button when angle toggle is set to radians
       secondButton.style.pointerEvents = "none";
     } else {
       angleToggle.textContent = "deg";
       angleToggle.classList.add("deg");
+      // Enable 2nd row button when angle toggle is set to degree
       secondButton.style.pointerEvents = "auto";
     }
     calculator.toggleAngleInput();

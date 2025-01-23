@@ -22,6 +22,8 @@ body {
     background-color: var(--body-color);
 }
 
+/* History Dialog */
+
 dialog {
     width: 40%;
     position: absolute;
@@ -77,6 +79,19 @@ dialog>header {
     color: red;
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.history-container>div::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+.history-container>div {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Dark mode button */
+
 .toggle-dark-mode {
     max-width: max-content;
     align-self: flex-end;
@@ -86,6 +101,7 @@ dialog>header {
     border: 1px solid white;
 }
 
+/* Full History button */
 .see-full-history {
     max-width: max-content;
     margin-bottom: 0.5rem;
@@ -96,12 +112,16 @@ dialog>header {
     border: 1px solid white;
 }
 
+/* Calculator */
+
 .calculator-container {
     display: flex;
     flex-direction: column;
     width: fit-content;
     margin: auto;
 }
+
+/* Calculator Display */
 
 .calculator-display-container {
     display: flex;
@@ -152,6 +172,7 @@ dialog>header {
     align-content: center;
 }
 
+/* All buttons container */
 .calculator-buttons {
     display: grid;
     grid-template-columns: repeat(5,4rem);
@@ -164,6 +185,7 @@ dialog>header {
     padding: 1rem;
 }
 
+/* Calculator Button */
 .calculator-buttons>div {
     border: 1px solid black;
     border-radius: 5%;

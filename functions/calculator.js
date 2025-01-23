@@ -336,6 +336,7 @@ class Calculator {
     return stack[stack.length - 1];
   }
 
+  // Public method that returns an output value after taking the infix string as input
   evaluteInfix() {
     const tokenArray = this.#tokenize(this.#infixInput);
     const postfixArray = this.#toPostfix(tokenArray);

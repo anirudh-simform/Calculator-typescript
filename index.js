@@ -21,8 +21,7 @@ const e = document.querySelector(".e");
 e.dataset.value = Math.E;
 
 addEventListeners();
-const safeToStart = false;
-let calculatorInput;
+
 const calculator = new Calculator("");
 
 export { calculator };
