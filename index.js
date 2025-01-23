@@ -4,6 +4,10 @@ import { setupDarkMode } from "./functions/setup-dark-mode.js";
 import { addModalEventListeners } from "./functions/modal-event-listeners.js";
 // main script
 
+// Initialize history array for localStorage
+const history = [];
+localStorage.setItem("history", JSON.stringify(history));
+
 // Dark Mode
 setupDarkMode();
 
