@@ -45,16 +45,14 @@ function createItem(expression, result) {
 }
 
 function createHistory(history) {
+  const wrappingContainer = document.createElement("div");
+
   for (let i = 0; i < history.length; i++) {
-    const wrappingContainer = document.createElement("div");
-
-    for (let i = 0; i < history.length; i++) {
-      const item = createItem(history[i].expression, history[i].result);
-      wrappingContainer.appendChild(item);
-    }
-
-    return wrappingContainer;
+    const item = createItem(history[i].expression, history[i].result);
+    wrappingContainer.appendChild(item);
   }
+
+  return wrappingContainer;
 }
 
 export { addModalEventListeners };
