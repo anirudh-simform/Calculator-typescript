@@ -132,6 +132,7 @@ function addEventListeners() {
       alert(err.message);
       outputValue = err.message;
       errorOccured = true;
+      latestChar = "error message";
     }
 
     answerDisplay.textContent = outputValue;
@@ -286,7 +287,13 @@ function addEventListeners() {
   pi.addEventListener("click", () => {
     const value = String(pi.dataset.value);
     calculator.appendChar(value);
-    display.textContent += pi.textContent;
+    if (!operatorAlreadyPresent) {
+      calculator.setInfix(value);
+      setupNewNodes(pi.textContent, "");
+      newDisplayNodeAlreadyPresent = true;
+    } else {
+      display.textContent += pi.textContent;
+    }
   });
 
   e.addEventListener("click", () => {
@@ -365,8 +372,19 @@ function addEventListeners() {
   const squareRoot = document.querySelector(".square-root");
   squareRoot.addEventListener("click", () => {
     const value = String(squareRoot.dataset.value) + "(";
-    calculator.appendChar(value);
-    display.textContent += squareRoot.dataset.displayValue;
+
+    if (errorOccured || !operatorAlreadyPresent) {
+      calculator.setInfix(value);
+      setupNewNodes(squareRoot.dataset.displayValue, "");
+      newDisplayNodeAlreadyPresent = true;
+
+      if (errorOccured) {
+        errorOccured = false;
+      }
+    } else {
+      calculator.appendChar(value);
+      display.textContent += squareRoot.dataset.displayValue;
+    }
   });
 
   // Parenthesis
