@@ -15,7 +15,7 @@ function addEqualsEventListener() {
     try {
       expression = calculator.getInfix();
       outputValue = calculator.evaluteInfix();
-      if (outputValue === undefined || outputValue === NaN) {
+      if (outputValue === undefined || isNaN(outputValue)) {
         throw new Error("The entered expression is incorrect");
       }
       calculator.setInfix(outputValue);
