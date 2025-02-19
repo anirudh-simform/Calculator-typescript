@@ -1,9 +1,15 @@
-import { calculator } from "../../index.js";
-import { globals } from "../add-event-listeners.js";
-import { setupNewNodes } from "./setup-new-nodes.js";
+import { calculator } from "../index.js";
+import {
+  globalBooleanVariables,
+  globalHTMLElements,
+  globalStringVariables,
+} from "./add-event-listeners.js";
+import { setupNewNodes } from "../../functions/event-listener-functions/setup-new-nodes.js";
 function addFunctionEventListeners() {
   // Functions
-  const functionNodes = document.querySelectorAll(".function");
+  const functionNodes = document.querySelectorAll(
+    ".function"
+  ) as NodeListOf<HTMLDivElement>;
   functionNodes.forEach((node) => {
     node.addEventListener("click", () => {
       let value;
@@ -22,9 +28,9 @@ function addFunctionEventListeners() {
       =====================================
       0 --> value
       */
-      if (globals.getValue("oneClearDone")) {
+      if (globalBooleanVariables["oneClearDone"]) {
         calculator.setInfix(value);
-        globals.getValue("display").textContent = displayValue;
+        globalHTMLElements["display"].textContent = displayValue;
       } else if (
         /*
       if the display is in error state 
@@ -40,35 +46,35 @@ function addFunctionEventListeners() {
                                value (in new node)                          value (in new node)
       */
 
-        globals.getValue("errorOccured") ||
-        (globals.getValue("oneEvaluationDone") &&
-          !globals.getValue("operatorAlreadyPresent"))
+        globalBooleanVariables["errorOccured"] ||
+        (globalBooleanVariables["oneEvaluationDone"] &&
+          !globalBooleanVariables["operatorAlreadyPresent"])
       ) {
         calculator.setInfix(value);
         setupNewNodes(displayValue, "");
 
-        if (globals.getValue("errorOccured")) {
-          globals.setValue("errorOccured", false);
+        if (globalBooleanVariables["errorOccured"]) {
+          globalBooleanVariables["errorOccured"] = false;
         }
 
         if (
-          globals.getValue("oneEvaluationDone") &&
-          !globals.getValue("operatorAlreadyPresent")
+          globalBooleanVariables["oneEvaluationDone"] &&
+          !globalBooleanVariables["operatorAlreadyPresent"]
         ) {
-          globals.setValue("operatorAlreadyPresent", false);
+          globalBooleanVariables["operatorAlreadyPresent"] = false;
         }
 
-        globals.setValue("newDisplayNodeAlreadyPresent", true);
+        globalBooleanVariables["newDisplayNodeAlreadyPresent"] = true;
       }
       // In all other cases append character to display normally
       else {
         calculator.appendChar(value);
-        globals.getValue("display").textContent += displayValue;
-        globals.setValue("newDisplayNodeAlreadyPresent", true);
+        globalHTMLElements["display"].textContent += displayValue;
+        globalBooleanVariables["newDisplayNodeAlreadyPresent"] = true;
       }
 
-      globals.setValue("latestChar", "function");
-      globals.setValue("operatorAlreadyPresent", true);
+      globalStringVariables["latestChar"] = "function";
+      globalBooleanVariables["operatorAlreadyPresent"] = true;
     });
   });
 }

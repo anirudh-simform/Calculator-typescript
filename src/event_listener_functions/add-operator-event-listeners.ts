@@ -1,9 +1,15 @@
-import { calculator } from "../../index.js";
-import { globals } from "../add-event-listeners.js";
+import { calculator } from "../index.js";
+import {
+  globalBooleanVariables,
+  globalHTMLElements,
+  globalStringVariables,
+} from "./add-event-listeners.js";
 import { setupNewNodes } from "./setup-new-nodes.js";
 function addOperatorEventListeners() {
   // Operator buttons
-  const operators = document.querySelectorAll(".operator");
+  const operators = document.querySelectorAll(
+    ".operator"
+  ) as NodeListOf<HTMLDivElement>;
   operators.forEach((operator) => {
     operator.addEventListener("click", () => {
       const value = String(operator.dataset.value);
@@ -25,18 +31,18 @@ function addOperatorEventListeners() {
       eg. 8 --> 8+
       */
       if (
-        !globals.getValue("oneEvaluationDone") ||
-        globals.getValue("oneClearDone") ||
-        globals.getValue("newDisplayNodeAlreadyPresent") ||
-        globals.getValue("latestChar") == "operator"
+        !globalBooleanVariables["oneEvaluationDone"] ||
+        globalBooleanVariables["oneClearDone"] ||
+        globalBooleanVariables["newDisplayNodeAlreadyPresent"] ||
+        globalStringVariables["latestChar"] == "operator"
       ) {
-        globals.getValue("display").textContent += value;
+        globalHTMLElements["display"].textContent += value;
 
         // Toggling oneClearDone to false so that any numbers entered after this invocation don't clear the display
-        if (globals.getValue("oneClearDone")) {
-          globals.setValue("oneClearDone", false);
+        if (globalBooleanVariables["oneClearDone"]) {
+          globalBooleanVariables["oneClearDone"] = false;
         }
-      } else if (globals.getValue("errorOccured")) {
+      } else if (globalBooleanVariables["errorOccured"]) {
         /*
       if an error has occured
       then
@@ -48,7 +54,7 @@ function addOperatorEventListeners() {
       */
         calculator.setInfix("0" + value);
         setupNewNodes("0" + value, "");
-        globals.setValue("newDisplayNodeAlreadyPresent", true);
+        globalBooleanVariables["newDisplayNodeAlreadyPresent"] = true;
       } else {
         /*
       For all other cases setup new nodes with values of the previous answer concatenated with the operator
@@ -59,14 +65,14 @@ function addOperatorEventListeners() {
       12 --> 12+
       */
         setupNewNodes(
-          globals.getValue("answerDisplay").textContent + value,
+          globalHTMLElements["answerDisplay"].textContent + value,
           ""
         );
       }
 
-      globals.setValue("errorOccured", false);
-      globals.setValue("operatorAlreadyPresent", true);
-      globals.setValue("latestChar", "operator");
+      globalBooleanVariables["errorOccured"] = false;
+      globalBooleanVariables["operatorAlreadyPresent"] = true;
+      globalStringVariables["latestChar"] = "operator";
     });
   });
 }
