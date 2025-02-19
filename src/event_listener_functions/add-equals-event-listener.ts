@@ -4,7 +4,7 @@ import {
   globalHTMLElements,
   globalStringVariables,
 } from "./add-event-listeners.js";
-import { getHistoryArray } from "../../data-objects/local-history-array.js";
+import { getHistoryArray } from "../data-objects/local-history-array.js";
 import { getCalculationObject } from "../helper_functions/get-calculation-object.js";
 import { pinDisplayToBottom } from "./pin-display-to-bottom.js";
 function addEqualsEventListener() {

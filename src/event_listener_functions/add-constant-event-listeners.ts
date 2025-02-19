@@ -3,7 +3,7 @@ import {
   globalBooleanVariables,
   globalHTMLElements,
 } from "./add-event-listeners.js";
-import { setupNewNodes } from "../../functions/event-listener-functions/setup-new-nodes.js";
+import { setupNewNodes } from "./setup-new-nodes.js";
 function addConstantEventListeners() {
   // Constants
   const pi = document.querySelector(".pi") as HTMLDivElement;

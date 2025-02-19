@@ -1,5 +1,5 @@
 import { globalHTMLElements } from "./add-event-listeners.js";
-import { pinDisplayToBottom } from "./pin-display-to-bottom";
+import { pinDisplayToBottom } from "./pin-display-to-bottom.js";
 
 // Sets up new Display and answerDisplay nodes and updates the previous variables
 // to refer to the new nodes

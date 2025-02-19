@@ -1,4 +1,4 @@
-import { globalHTMLElements } from "./add-event-listeners";
+import { globalHTMLElements } from "./add-event-listeners.js";
 
 // Pins scrollbar of the calculatorDisplayContainer to the bottom
 function pinDisplayToBottom() {

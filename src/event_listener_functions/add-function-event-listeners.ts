@@ -4,7 +4,7 @@ import {
   globalHTMLElements,
   globalStringVariables,
 } from "./add-event-listeners.js";
-import { setupNewNodes } from "../../functions/event-listener-functions/setup-new-nodes.js";
+import { setupNewNodes } from "./setup-new-nodes.js";
 function addFunctionEventListeners() {
   // Functions
   const functionNodes = document.querySelectorAll(
