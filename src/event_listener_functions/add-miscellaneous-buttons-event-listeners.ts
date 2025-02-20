@@ -1,8 +1,5 @@
 import { calculator } from "../index.js";
-import {
-  globalBooleanVariables,
-  globalHTMLElements,
-} from "./add-event-listeners.js";
+import { globalHTMLElements } from "./add-event-listeners.js";
 function addMiscellaneousButtonsEventListeners() {
   // miscellaneous
   const decimal = document.querySelector(".decimal") as HTMLDivElement;
@@ -13,23 +10,6 @@ function addMiscellaneousButtonsEventListeners() {
       const value = String(decimal.dataset.value);
       calculator.appendChar(value);
       globalHTMLElements["display"].textContent += value;
-    });
-  }
-
-  const mod = document.querySelector(".mod") as HTMLDivElement;
-
-  // Check if mod is present in the DOM
-  if (mod !== null) {
-    mod.addEventListener("click", () => {
-      if (globalBooleanVariables["oneClearDone"]) {
-        globalBooleanVariables["oneClearDone"] = false;
-      }
-      const value = String(mod.dataset.value);
-      calculator.appendChar(value);
-      const modContent = mod.textContent;
-      if (modContent !== null) {
-        globalHTMLElements["display"].textContent += modContent;
-      }
     });
   }
 }

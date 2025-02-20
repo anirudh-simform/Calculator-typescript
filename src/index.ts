@@ -14,9 +14,6 @@ if (!localStorage.getItem("history")) {
 // Dark Mode
 setupDarkMode();
 
-// Setup modal
-addModalEventListeners();
-
 // Set Constants
 
 // PI

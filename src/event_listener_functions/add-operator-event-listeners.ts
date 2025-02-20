@@ -13,6 +13,7 @@ function addOperatorEventListeners() {
   operators.forEach((operator) => {
     operator.addEventListener("click", () => {
       const value = String(operator.dataset.value);
+      const displayValue = String(operator.dataset.displayValue);
       calculator.appendChar(value);
       /*
       if 
@@ -36,7 +37,7 @@ function addOperatorEventListeners() {
         globalBooleanVariables["newDisplayNodeAlreadyPresent"] ||
         globalStringVariables["latestChar"] == "operator"
       ) {
-        globalHTMLElements["display"].textContent += value;
+        globalHTMLElements["display"].textContent += displayValue;
 
         // Toggling oneClearDone to false so that any numbers entered after this invocation don't clear the display
         if (globalBooleanVariables["oneClearDone"]) {
@@ -53,7 +54,7 @@ function addOperatorEventListeners() {
       eg. error --> In new node => 0+
       */
         calculator.setInfix("0" + value);
-        setupNewNodes("0" + value, "");
+        setupNewNodes("0" + displayValue, "");
         globalBooleanVariables["newDisplayNodeAlreadyPresent"] = true;
       } else {
         /*
@@ -65,7 +66,7 @@ function addOperatorEventListeners() {
       12 --> 12+
       */
         setupNewNodes(
-          globalHTMLElements["answerDisplay"].textContent + value,
+          globalHTMLElements["answerDisplay"].textContent + displayValue,
           ""
         );
       }

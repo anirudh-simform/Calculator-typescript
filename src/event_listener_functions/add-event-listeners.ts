@@ -10,26 +10,11 @@ import { addSquareRootEventListener } from "./add-square-root-event-listener.js"
 import { addParentthesisEventListeners } from "./add-parenthesis-event-listeners.js";
 import { addMiscellaneousButtonsEventListeners } from "./add-miscellaneous-buttons-event-listeners.js";
 import { addAngleToggleEventListener } from "./add-angle-toggle-event-listeners.js";
+import { addModalEventListeners } from "./modal-event-listeners.js";
 
 // Global constants
 
-type GlobalKey =
-  | "calculatorDisplayContainer"
-  | "display"
-  | "answerDisplay"
-  | "trignometricFunctions"
-  | "secondButton"
-  | "angleToggle"
-  | "newDisplay"
-  | "newAnswerDisplay"
-  | "oneEvaluationDone"
-  | "oneClearDone"
-  | "errorOccured"
-  | "operatorAlreadyPresent"
-  | "newDisplayNodeAlreadyPresent"
-  | "latestChar";
-
-type GlobalValue = boolean | HTMLDivElement | NodeListOf<HTMLElement> | string;
+// Type Declarations
 interface GlobalHTMLElements {
   calculatorDisplayContainer: HTMLDivElement;
   display: HTMLDivElement;
@@ -59,6 +44,7 @@ interface GlobalStringVariables {
   latestChar: string;
 }
 
+// Global Constants
 const globalHTMLElements: GlobalHTMLElements = {
   calculatorDisplayContainer: document.querySelector(
     ".calculator-display-container"
@@ -87,8 +73,7 @@ const globalNodeListElements: GlobalNodeListElements = {
   trignometricFunctions: document.querySelectorAll(".trignometric"),
 };
 
-// Fetch required DOM nodes
-
+// Function to add all the event listeners
 function addEventListeners() {
   addSecondButtonEventListener();
 
@@ -113,6 +98,8 @@ function addEventListeners() {
   addMiscellaneousButtonsEventListeners();
 
   addAngleToggleEventListener();
+
+  addModalEventListeners();
 }
 
 export {
