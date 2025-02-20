@@ -29,6 +29,7 @@ function addAllClearEventListener() {
         // Reset Calculator
         calculator.setInfix("0");
         setupNewNodes("0", "");
+        globalBooleanVariables["newDisplayNodeAlreadyPresent"] = true;
       }
       globalBooleanVariables["oneClearDone"] = true;
       // Setting the button back to all clear

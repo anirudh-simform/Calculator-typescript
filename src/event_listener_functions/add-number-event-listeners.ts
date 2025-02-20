@@ -70,6 +70,7 @@ function addNumberEventListeners() {
       else {
         calculator.appendChar(value);
         globalHTMLElements["display"].textContent += value;
+        // setting newDisplayAlreadyPresent to true so other buttons don't create new nodes
         globalBooleanVariables["newDisplayNodeAlreadyPresent"] = true;
       }
 

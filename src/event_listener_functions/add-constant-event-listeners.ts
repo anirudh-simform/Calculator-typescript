@@ -15,6 +15,7 @@ function addConstantEventListeners() {
       const value = String(pi.dataset.value);
       calculator.appendChar(value);
       if (!globalBooleanVariables["operatorAlreadyPresent"]) {
+        // Overwrite previous value if operator already present
         calculator.setInfix(value);
         const piContent = pi.textContent;
         if (piContent !== null) {
@@ -36,9 +37,21 @@ function addConstantEventListeners() {
     e.addEventListener("click", () => {
       const value = String(e.dataset.value);
       calculator.appendChar(value);
-      const eContent = e.textContent;
-      if (eContent !== null) {
-        globalHTMLElements["display"].textContent += eContent;
+
+      if (!globalBooleanVariables["operatorAlreadyPresent"]) {
+        // Overwrite previous value if operator already present
+        calculator.setInfix(value);
+        const eContent = e.textContent;
+        if (eContent !== null) {
+          setupNewNodes(eContent, "");
+        }
+
+        globalBooleanVariables["newDisplayNodeAlreadyPresent"] = true;
+      } else {
+        const eContent = e.textContent;
+        if (eContent !== null) {
+          globalHTMLElements["display"].textContent += eContent;
+        }
       }
     });
   }
