@@ -9,6 +9,7 @@ function addConstantEventListeners() {
   const pi = document.querySelector(".pi") as HTMLDivElement;
   const e = document.querySelector(".e") as HTMLDivElement;
 
+  // Check if pi is present in the DOM
   if (pi !== null) {
     pi.addEventListener("click", () => {
       const value = String(pi.dataset.value);
@@ -30,6 +31,7 @@ function addConstantEventListeners() {
     });
   }
 
+  // Check if e is present in the DOM
   if (e !== null) {
     e.addEventListener("click", () => {
       const value = String(e.dataset.value);

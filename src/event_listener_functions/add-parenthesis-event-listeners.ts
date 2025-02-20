@@ -5,6 +5,7 @@ function addParentthesisEventListeners() {
   const openPara = document.querySelector(".open-para") as HTMLDivElement;
   const closedPara = document.querySelector(".close-para") as HTMLDivElement;
 
+  // Check if openPara is present in the DOM
   if (openPara !== null) {
     openPara.addEventListener("click", () => {
       const value = String(openPara.dataset.value);
@@ -13,6 +14,7 @@ function addParentthesisEventListeners() {
     });
   }
 
+  // Check if closedPara is present in the DOM
   if (closedPara !== null) {
     closedPara.addEventListener("click", () => {
       const value = String(closedPara.dataset.value);

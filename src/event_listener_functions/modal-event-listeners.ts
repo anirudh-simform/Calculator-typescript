@@ -9,6 +9,7 @@ function addModalEventListeners() {
   const close = document.querySelector(".close");
   let history: CalculationHistoryObject[];
 
+  // Check if the DOM elements being accessed are present in the DOM
   if (
     seeFullHistory != null &&
     dialog != null &&

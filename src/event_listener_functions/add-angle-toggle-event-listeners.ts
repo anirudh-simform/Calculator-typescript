@@ -3,6 +3,7 @@ function addAngleToggleEventListener() {
   const secondButton = document.querySelector(".second-row") as HTMLDivElement;
   const angleToggle = document.querySelector(".angle-toggle") as HTMLDivElement;
 
+  // Check if secondButton and angleToggle are present in the DOM
   if (secondButton != null && angleToggle != null) {
     angleToggle.addEventListener("click", () => {
       if (angleToggle.classList.contains("deg")) {

@@ -12,10 +12,11 @@ function addEqualsEventListener() {
   const equals = document.querySelector(".equals");
   const allClear = document.querySelector(".all-clear");
 
+  // Check if equals and allClear are present in the DOM
   if (equals !== null && allClear !== null) {
     equals.addEventListener("click", () => {
-      let outputValue;
-      let expression: string | undefined;
+      let outputValue: number;
+      let expression: string = "";
       try {
         expression = calculator.getInfix();
         outputValue = Number(calculator.evaluteInfix());
@@ -30,7 +31,7 @@ function addEqualsEventListener() {
         globalStringVariables["latestChar"] = "error message";
       }
 
-      globalHTMLElements["answerDisplay"].textContent = outputValue;
+      globalHTMLElements["answerDisplay"].textContent = String(outputValue);
       pinDisplayToBottom();
 
       if (!globalBooleanVariables["oneEvaluationDone"]) {
@@ -44,7 +45,7 @@ function addEqualsEventListener() {
 
       const history = getHistoryArray();
       if (expression && outputValue) {
-        history.push(getCalculationObject(expression, outputValue));
+        history.push(getCalculationObject(expression, String(outputValue)));
         localStorage.setItem("history", JSON.stringify(history));
       }
     });

@@ -7,6 +7,8 @@ import { calculator } from "../index.js";
 function addAllClearEventListener() {
   // AC button (clears input)
   const allClear = document.querySelector(".all-clear");
+
+  // Check if allClear is present in the DOM
   if (allClear !== null) {
     allClear.addEventListener("click", () => {
       calculator.clearInput();

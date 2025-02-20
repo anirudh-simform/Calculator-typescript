@@ -7,6 +7,7 @@ function addMiscellaneousButtonsEventListeners() {
   // miscellaneous
   const decimal = document.querySelector(".decimal") as HTMLDivElement;
 
+  // Check if decimal is present in the DOM
   if (decimal !== null) {
     decimal.addEventListener("click", () => {
       const value = String(decimal.dataset.value);
@@ -16,6 +17,8 @@ function addMiscellaneousButtonsEventListeners() {
   }
 
   const mod = document.querySelector(".mod") as HTMLDivElement;
+
+  // Check if mod is present in the DOM
   if (mod !== null) {
     mod.addEventListener("click", () => {
       if (globalBooleanVariables["oneClearDone"]) {
