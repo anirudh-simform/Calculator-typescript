@@ -1,17 +1,22 @@
-import { degToRad } from "./degree-to-radians.js";
+import { degToRad } from "./helper_functions/degree-to-radians.js";
+
+interface Precedence {
+  [index: string]: number;
+}
+
 class Calculator {
-  #infixInput;
-  static #angleInput = "deg";
+  #infixInput: string;
+  static #angleInput: string = "deg";
 
   constructor() {
     this.#infixInput = "";
   }
 
-  setInfix(inputString) {
+  setInfix(inputString: string) {
     this.#infixInput = inputString;
   }
 
-  appendChar(char) {
+  appendChar(char: string) {
     this.#infixInput = this.#infixInput + char;
   }
 
@@ -21,7 +26,7 @@ class Calculator {
     }
   }
 
-  getInfix() {
+  getInfix(): string {
     return this.#infixInput;
   }
 
@@ -33,96 +38,92 @@ class Calculator {
     Calculator.#angleInput = Calculator.#angleInput == "deg" ? "rad" : "deg";
   }
 
-  currAngleInput() {
+  currAngleInput(): string {
     return Calculator.#angleInput;
   }
 
   // basic operations
-  static add(a, b) {
+  static add(a: number, b: number): number {
     return a + b;
   }
 
-  static multiply(a, b) {
+  static multiply(a: number, b: number): number {
     return a * b;
   }
 
-  static subtract(a, b) {
+  static subtract(a: number, b: number): number {
     return a - b;
   }
 
-  static divide(a, b) {
+  static divide(a: number, b: number): number {
     if (b == 0) {
       throw new Error("Can't divide by 0");
     }
     return a / b;
   }
 
-  static power(a, b) {
+  static power(a: number, b: number): number {
     return a ** b;
   }
 
-  static modularDivision(a, b) {
+  static modularDivision(a: number, b: number): number {
     return a % b;
   }
 
-  static percentage(a) {
+  static percentage(a: number): number {
     return a / 100;
   }
 
-  static sin(a) {
+  static sin(a: number): number {
     if (this.#angleInput == "deg") {
       a = degToRad(a);
     }
     return Math.round(Math.sin(a) * 10) / 10;
   }
 
-  static cos(a) {
+  static cos(a: number): number {
     if (this.#angleInput == "deg") {
       a = degToRad(a);
     }
     return Math.round(Math.cos(a) * 10) / 10;
   }
 
-  static tan(a) {
+  static tan(a: number): number {
     if (this.#angleInput == "deg") {
       a = degToRad(a);
     }
     return Math.round(Math.tan(a) * 10) / 10;
   }
 
-  static sini(a) {
+  static sini(a: number): number {
     return Math.round(Math.asin(a) * 10) / 10;
   }
 
-  static cosi(a) {
+  static cosi(a: number): number {
     return Math.round(Math.acos(a) * 10) / 10;
   }
 
-  static tani(a) {
+  static tani(a: number): number {
     return Math.round(Math.atan(a) * 10) / 10;
   }
 
-  static percentage(a) {
-    return this.divide(a, 100);
-  }
-
-  static log(a) {
+  static log(a: number): number {
     return Math.log10(a);
   }
 
-  static ln(a) {
+  static ln(a: number): number {
     return Math.log(a);
   }
 
-  static sqrt(a) {
+  static sqrt(a: number) {
     return Math.sqrt(a);
   }
 
-  static uminus(a) {
+  static uminus(a: number): number {
     return a * -1;
   }
 
-  static factorial(n) {
+  static factorial(n: number): number {
     let fact = 1;
     for (let i = 1; i <= n; i++) {
       fact *= i;
@@ -132,7 +133,7 @@ class Calculator {
   }
 
   // constants used in calculation
-  static #precedence = {
+  static #precedence: Precedence = {
     "+": 2,
     "-": 2,
     "*": 3,
@@ -153,7 +154,7 @@ class Calculator {
     uminus: 11,
   };
 
-  static #unaryOperators = new Set([
+  static #unaryOperators: Set<string> = new Set([
     "sin",
     "cos",
     "tan",
@@ -171,7 +172,7 @@ class Calculator {
   // Functions for processing input string
 
   // A helper function that selects the correct function based on its inputs
-  #calculate(operator, ...operands) {
+  #calculate(operator: string, ...operands: number[]) {
     switch (operator) {
       case "+":
         return Calculator.add(operands[0], operands[1]);
@@ -216,9 +217,9 @@ class Calculator {
   }
 
   // Divides the input string into individual tokens
-  #tokenize(input) {
+  #tokenize(input: string): string[] {
     let str = "";
-    let arr = [];
+    let arr: string[] = [];
 
     let openParaCount = 0;
     let closedParaCount = 0;
@@ -271,9 +272,9 @@ class Calculator {
   }
 
   // Converts the output from the tokenize function into postfix notation
-  #toPostfix(input) {
-    let output = [];
-    let stack = [];
+  #toPostfix(input: string[]): string[] {
+    let output: string[] = [];
+    let stack: string[] = [];
 
     for (let i = 0; i <= input.length - 1; i++) {
       if (Calculator.#precedence[input[i]]) {
@@ -293,7 +294,9 @@ class Calculator {
               Calculator.#precedence[stack[stack.length - 1]]
           ) {
             const last = stack.pop();
-            output.push(last);
+            if (last) {
+              output.push(last);
+            }
           }
           stack.push(input[i]);
         }
@@ -302,7 +305,9 @@ class Calculator {
       } else if (input[i] == ")") {
         while (stack.length > 0 && stack[stack.length - 1] != "(") {
           const last = stack.pop();
-          output.push(last);
+          if (last !== undefined) {
+            output.push(last);
+          }
         }
         stack.pop();
       } else {
@@ -311,23 +316,27 @@ class Calculator {
     }
 
     while (stack.length > 0) {
-      output.push(stack.pop());
+      const last = stack.pop();
+      if (last !== undefined) {
+        output.push(last);
+      }
     }
 
     return output;
   }
 
   // Evalutes postfix expressions
-  #evaluatePostfix(input) {
-    let stack = [];
+  #evaluatePostfix(input: string[]): string {
+    // Stack will hold both numbers and operators
+    let stack: string[] = [];
     for (let item of input) {
       if ("+-*/^|".indexOf(item) > -1) {
-        const first = Number(stack.pop());
-        const second = Number(stack.pop());
-        stack.push(this.#calculate(item, second, first));
+        const first: number = Number(stack.pop());
+        const second: number = Number(stack.pop());
+        stack.push(String(this.#calculate(item, second, first)));
       } else if (Calculator.#unaryOperators.has(item)) {
-        const first = Number(stack.pop());
-        stack.push(this.#calculate(item, first));
+        const first: number = Number(stack.pop());
+        stack.push(String(this.#calculate(item, first)));
       } else {
         stack.push(item);
       }
