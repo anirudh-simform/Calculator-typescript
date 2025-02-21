@@ -2,6 +2,16 @@
 
 A Simple Scientific Calculator.
 
+# How to run this project
+
+- Install node and npm in your environment if not already present.
+- Clone this repository to your machine.
+- run `npm install` to install all the dependencies.
+- Compile the TypeScript using `tsc` for global TypeScript installation and `npx tsc` for local installation.
+- Locally run project using live server or other means.
+
+---
+
 # Functionality
 
 ## Operators
