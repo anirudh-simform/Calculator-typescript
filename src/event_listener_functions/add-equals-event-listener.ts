@@ -18,7 +18,7 @@ function addEqualsEventListener() {
       let outputValue: number;
       let expression: string = "";
       try {
-        expression = calculator.getInfix();
+        expression = String(globalHTMLElements["display"].textContent);
         outputValue = Number(calculator.evaluteInfix());
         if (outputValue === undefined || isNaN(outputValue)) {
           throw new Error("The entered expression is incorrect");
